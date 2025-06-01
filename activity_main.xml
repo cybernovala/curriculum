@@ -1,0 +1,15 @@
+<ScrollView ...>
+    <LinearLayout ... orientation="vertical">
+        <EditText android:id="@+id/etNombre" android:hint="Nombre completo"/>
+        <EditText android:id="@+id/etFechaNac" android:hint="Fecha de nacimiento"/>
+        <EditText android:id="@+id/etRut" android:hint="RUT"/>
+        <EditText android:id="@+id/etCorreo" android:hint="Correo"/>
+        <EditText android:id="@+id/etTelefono" android:hint="Teléfono"/>
+        <EditText android:id="@+id/etAcademicos" android:hint="Datos académicos"/>
+        <EditText android:id="@+id/etLaborales" android:hint="Datos laborales"/>
+        <EditText android:id="@+id/etSalud" android:hint="Sistema de salud"/>
+        <EditText android:id="@+id/etPrevision" android:hint="Previsión"/>
+        <EditText android:id="@+id/etLicencia" android:hint="Licencia de conducir"/>
+        <Button android:id="@+id/btnEnviar" android:text="Enviar"/>
+    </LinearLayout>
+</ScrollView>
