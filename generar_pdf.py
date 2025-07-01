@@ -105,15 +105,14 @@ def generar_pdf(data):
     reader = PdfReader(pdf_buffer)
     writer = PdfWriter()
 
-    # Marca de agua corregida: cubrir todo el ancho
+    # Marca de agua clara para simular transparencia
     for page in reader.pages:
         wm_pdf = FPDF()
         wm_pdf.add_page()
 
         wm_pdf.set_font("Arial", "B", 70)
-        wm_pdf.set_text_color(220, 220, 220)
+        wm_pdf.set_text_color(245, 245, 245)  # Color muy claro, casi transparente
 
-        # Repetir varias veces para cubrir
         for y in range(0, 300, 60):
             wm_pdf.rotate(45, x=0, y=0)
             wm_pdf.text(-50, y, "CYBERNOVA      CYBERNOVA      CYBERNOVA")
