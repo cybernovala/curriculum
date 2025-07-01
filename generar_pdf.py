@@ -15,7 +15,7 @@ def generar_pdf(data):
     # Posición actual después del nombre
     y_actual = pdf.get_y() + 5
 
-    # Dibujar columna lateral ancha semitransparente (simulada con gris claro)
+    # Dibujar columna lateral ancha
     pdf.set_fill_color(230, 230, 230)  # Color claro
     pdf.rect(10, y_actual, 40, 250 - y_actual, 'F')
 
@@ -111,14 +111,14 @@ def generar_pdf(data):
     reader = PdfReader(pdf_buffer)
     writer = PdfWriter()
 
-    # Agregar marca de agua grande
+    # Agregar marca de agua grande (de lado a lado)
     for page in reader.pages:
         wm_pdf = FPDF()
         wm_pdf.add_page()
-        wm_pdf.set_font("Arial", "B", 80)
+        wm_pdf.set_font("Arial", "B", 120)  # Mucho más grande
         wm_pdf.set_text_color(200, 200, 200)
         wm_pdf.rotate(45, x=None, y=None)
-        wm_pdf.text(20, 200, "CYBERNOVA")
+        wm_pdf.text(-30, 200, "CYBERNOVA")  # Empieza más hacia el lado para cubrir todo
         wm_bytes = wm_pdf.output(dest='S').encode('latin1')
         wm_buffer = io.BytesIO(wm_bytes)
         wm_reader = PdfReader(wm_buffer)
