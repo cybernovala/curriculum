@@ -6,16 +6,16 @@ import io
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/generar_poder", methods=["POST"])
-def generar_poder():
-    data = request.get_json()
-    pdf_bytes = generar_pdf(data)
+@app.route('/generar_pdf', methods=['POST'])
+def generar():
+    datos = request.get_json()
+    pdf_bytes = generar_pdf(datos)
     return send_file(
         io.BytesIO(pdf_bytes),
-        download_name="poder_simple.pdf",
+        mimetype='application/pdf',
         as_attachment=True,
-        mimetype="application/pdf"
+        download_name='curriculum_cybernova.pdf'
     )
 
-if __name__ == "__main__":
-    app.run()
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=10000)
