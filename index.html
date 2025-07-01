@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Poder Simple</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: linear-gradient(to bottom right, #d9e4f5, #ffffff);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    form {
+      max-width: 600px;
+      margin: auto;
+      background-color: #ffffffdd;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 12px;
+      display: block;
+      font-size: 16px;
+    }
+
+    input, textarea {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      margin-bottom: 18px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    button {
+      padding: 14px;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      font-size: 18px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #3367d6;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 22px;
+      }
+
+      form {
+        padding: 15px;
+      }
+
+      input, textarea {
+        font-size: 18px;
+        padding: 16px;
+      }
+
+      button {
+        font-size: 20px;
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <p style="color:blue; font-size: 0.9em;">
+    Valor: $1.500 por 2 copias.
+El archivo PDF generado está protegido con contraseña y no puede ser abierto directamente.
+Debe buscar el archivo en su carpeta Descargas con el nombre: poder_cybernova.pdf.
+Este archivo solo puede ser enviado para su impresión a:
+📧 bartese823@gmail.com
+📱 o vía WhatsApp al +56 9 6664 8585.
+El retiro se realiza en Cybernova, ubicado en Colo Colo 512, Los Ángeles.
+    </p>
+<p style="color:blue; font-size: 0.9em;">
+   ----INGRESE SUS DATOS EN EL FORMULARIO.... 
+  </p>
+    
+  <form id="formulario">
+    <label>Nombre de quien autoriza</label>
+    <input type="text" id="autorizador" value="JUANITA PEREZ" />
+
+    <label>RUT de quien autoriza</label>
+    <input type="text" id="rut_autorizador" value="99.999.999-9" />
+
+    <label>Nombre de persona autorizada</label>
+    <input type="text" id="autorizado" value="PERICO LOS PALOTES" />
+
+    <label>RUT de persona autorizada</label>
+    <input type="text" id="rut_autorizado" value="99.999.999-9" />
+
+    <label>Trámite</label>
+    <textarea id="tramite">RETIRO DE MERCADERÍAS EN LA EMPRESA X</textarea>
+
+    <label>Fecha</label>
+    <input type="text" id="fecha" value="LOS ÁNGELES, 14 DE JUNIO DE 2025" />
+
+    <button type="submit">Generar Poder PDF</button>
+  </form>
+
+  <script src="script.js"></script>
+</body>
+</html>
