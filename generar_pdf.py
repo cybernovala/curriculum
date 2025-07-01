@@ -1,46 +1,104 @@
 from fpdf import FPDF
-from PyPDF2 import PdfReader, PdfWriter
-from datetime import datetime
 import io
+from PyPDF2 import PdfReader, PdfWriter
 
 def generar_pdf(data):
     pdf = FPDF()
     pdf.add_page()
+
+    # Título
+    pdf.set_font("Arial", "B", 20)
+    pdf.set_text_color(40, 40, 80)
+    nombre = data.get("nombre", "").upper()
+    pdf.cell(0, 10, nombre, ln=1, align="C")
+
+    # Datos personales
+    pdf.set_font("Arial", "", 12)
+    pdf.set_text_color(0, 0, 0)
+    pdf.ln(5)
+
+    campos = [
+        ("Email", data.get("email", "")),
+        ("Teléfono", data.get("telefono", "")),
+        ("Dirección", data.get("direccion", "")),
+        ("Fecha nacimiento", data.get("fecha_nacimiento", "")),
+        ("Nacionalidad", data.get("nacionalidad", "")),
+        ("RUT", data.get("rut", "")),
+        ("Estado civil", data.get("estado_civil", "")),
+        ("Salud", data.get("sistema_salud", "")),
+        ("AFP", data.get("afp", "")),
+        ("Licencia conducir", data.get("licencia_conducir", ""))
+    ]
+
+    for label, valor in campos:
+        if valor:
+            pdf.multi_cell(0, 8, f"{label}: {valor}")
+
+    pdf.ln(5)
+
+    # Formación académica
     pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 10, "Formación Académica", ln=1)
+    fechas = data.get("fecha", [])
+    establecimientos = data.get("establecimiento", [])
+    grados = data.get("grado", [])
 
-    pdf.set_xy(10, 20)
-    pdf.cell(0, 10, "PODER SIMPLE", ln=True, align="C")
+    if not isinstance(fechas, list):
+        fechas = [fechas]
+    if not isinstance(establecimientos, list):
+        establecimientos = [establecimientos]
+    if not isinstance(grados, list):
+        grados = [grados]
 
-    pdf.set_font("Arial", "", 14)
-    pdf.ln(10)
+    for f, e, g in zip(fechas, establecimientos, grados):
+        pdf.set_font("Arial", "", 12)
+        pdf.multi_cell(0, 8, f"{f} - {e} ({g})")
 
-    texto = f"""
-YO, {data['autorizador']}, RUT {data['rut_autorizador']}, 
-AUTORIZO A {data['autorizado']}, RUT {data['rut_autorizado']}, 
-PARA REALIZAR EL SIGUIENTE TRÁMITE: {data['tramite']}.
-"""
+    pdf.ln(5)
 
-    for line in texto.strip().split('\n'):
-        pdf.multi_cell(0, 10, line.strip())
+    # Experiencia laboral
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 10, "Experiencia Laboral", ln=1)
+    fechas_lab = data.get("fecha", [])
+    empresas = data.get("empresa", [])
+    cargos = data.get("cargo", [])
 
-    # Fecha final
-    pdf.ln(20)
-    fecha_actual = datetime.now().strftime("LOS ÁNGELES, %-d DE %B DE %Y").upper()
-    pdf.cell(0, 10, fecha_actual, ln=True, align="R")
+    if not isinstance(empresas, list):
+        empresas = [empresas]
+    if not isinstance(cargos, list):
+        cargos = [cargos]
+    if not isinstance(fechas_lab, list):
+        fechas_lab = [fechas_lab]
 
-    # Guardar en buffer
-    buffer = io.BytesIO()
-    pdf.output(buffer)
-    buffer.seek(0)
+    for f, emp, c in zip(fechas_lab, empresas, cargos):
+        pdf.set_font("Arial", "", 12)
+        pdf.multi_cell(0, 8, f"{f} - {emp}, {c}")
 
-    # Aplicar contraseña
-    reader = PdfReader(buffer)
+    # Generar bytes
+    pdf_bytes = pdf.output(dest='S').encode('latin1')
+    pdf_buffer = io.BytesIO(pdf_bytes)
+
+    # Marca de agua usando PyPDF2
+    reader = PdfReader(pdf_buffer)
     writer = PdfWriter()
+
     for page in reader.pages:
+        # Simular marca de agua usando overlay
+        watermark = FPDF()
+        watermark.add_page()
+        watermark.set_font("Arial", "B", 50)
+        watermark.set_text_color(200, 200, 200)
+        watermark.rotate(45)
+        watermark.text(50, 150, "CYBERNOVA")
+        wm_bytes = watermark.output(dest='S').encode('latin1')
+        wm_buffer = io.BytesIO(wm_bytes)
+        wm_pdf = PdfReader(wm_buffer)
+
+        # Fusionar watermark con la página original
+        page.merge_page(wm_pdf.pages[0])
         writer.add_page(page)
 
-    writer.encrypt("@@1234@@")
-
-    output = io.BytesIO()
-    writer.write(output)
-    return output.getvalue()
+    output_buffer = io.BytesIO()
+    writer.write(output_buffer)
+    output_buffer.seek(0)
+    return output_buffer.read()
