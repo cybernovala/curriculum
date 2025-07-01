@@ -3,124 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Poder Simple</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: linear-gradient(to bottom right, #d9e4f5, #ffffff);
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 28px;
-      margin-bottom: 30px;
-    }
-
-    form {
-      max-width: 600px;
-      margin: auto;
-      background-color: #ffffffdd;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    label {
-      font-weight: bold;
-      margin-top: 12px;
-      display: block;
-      font-size: 16px;
-    }
-
-    input, textarea {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      margin-bottom: 18px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-sizing: border-box;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    button {
-      padding: 14px;
-      background-color: #4285f4;
-      color: white;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      font-size: 18px;
-      border-radius: 8px;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #3367d6;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 22px;
-      }
-
-      form {
-        padding: 15px;
-      }
-
-      input, textarea {
-        font-size: 18px;
-        padding: 16px;
-      }
-
-      button {
-        font-size: 20px;
-        padding: 16px;
-      }
-    }
-  </style>
+  <title>Generador de Currículum</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <p style="color:blue; font-size: 0.9em;">
-    Valor: $1.500 por 2 copias.
-El archivo PDF generado está protegido con contraseña y no puede ser abierto directamente.
-Debe buscar el archivo en su carpeta Descargas con el nombre: poder_cybernova.pdf.
-Este archivo solo puede ser enviado para su impresión a:
-📧 bartese823@gmail.com
-📱 o vía WhatsApp al +56 9 6664 8585.
-El retiro se realiza en Cybernova, ubicado en Colo Colo 512, Los Ángeles.
-    </p>
-<p style="color:blue; font-size: 0.9em;">
-   ----INGRESE SUS DATOS EN EL FORMULARIO.... 
+    Valor: $1.500 por 2 copias.<br>
+    El archivo PDF generado está protegido con contraseña y no puede ser abierto directamente.<br>
+    Debe buscar el archivo en su carpeta Descargas con el nombre: curriculum_cybernova.pdf.<br>
+    Este archivo solo puede ser enviado para su impresión a:<br>
+    📧 bartese823@gmail.com<br>
+    📱 WhatsApp al +56 9 6664 8585.<br>
+    Retiro en Cybernova, Colo Colo 512, Los Ángeles.
   </p>
-    
+  <p style="color:blue; font-size: 0.9em;">----INGRESE SUS DATOS EN EL FORMULARIO....</p>
+  <p style="color:red; font-size: 0.9em;">Revise bien la vista previa antes de Generar el PDF</p>
+
   <form id="formulario">
-    <label>Nombre de quien autoriza</label>
-    <input type="text" id="autorizador" value="JUANITA PEREZ" />
+    <fieldset>
+      <legend>Datos Personales</legend>
+      <input type="text" name="nombre" placeholder="Nombre completo" required />
+      <input type="text" name="email" placeholder="Correo electrónico" required />
+      <input type="text" name="telefono" placeholder="Teléfono" required />
+      <input type="text" name="direccion" placeholder="Dirección" required />
+      <input type="text" name="fecha_nacimiento" placeholder="Fecha de nacimiento (dd/mm/aaaa)" required />
+      <input type="text" name="nacionalidad" placeholder="Nacionalidad" />
+      <input type="text" name="rut" placeholder="RUT" />
+      <input type="text" name="estado_civil" placeholder="Estado civil" />
+      <input type="text" name="sistema_salud" placeholder="Fonasa - Isapre..." />
+      <input type="text" name="afp" placeholder="AFP" />
+      <input type="text" name="licencia_conducir" placeholder="Licencia de conducir Clase B... Si-No" />
+    </fieldset>
 
-    <label>RUT de quien autoriza</label>
-    <input type="text" id="rut_autorizador" value="99.999.999-9" />
+    <fieldset id="academico">
+      <legend>Formación Académica</legend>
+      <div class="grupo">
+        <input type="text" name="fecha" placeholder="2020-2025" required />
+        <input type="text" name="establecimiento" placeholder="Establecimiento" required />
+        <input type="text" name="grado" placeholder="E.Basica - Media Completa-Incompleta....." required />
+      </div>
+      <button type="button" onclick="agregarCampo('academico')">Agregar Formación</button>
+    </fieldset>
 
-    <label>Nombre de persona autorizada</label>
-    <input type="text" id="autorizado" value="PERICO LOS PALOTES" />
+    <fieldset id="laboral">
+      <legend>Experiencia Laboral</legend>
+      <div class="grupo">
+        <input type="text" name="fecha" placeholder="2020-2025" required />
+        <input type="text" name="empresa" placeholder="Empresa" required />
+        <input type="text" name="cargo" placeholder="Cargo" required />
+      </div>
+      <button type="button" onclick="agregarCampo('laboral')">Agregar Experiencia</button>
+    </fieldset>
 
-    <label>RUT de persona autorizada</label>
-    <input type="text" id="rut_autorizado" value="99.999.999-9" />
+    <button type="button" id="vista-previa">Vista Previa</button>
 
-    <label>Trámite</label>
-    <textarea id="tramite">RETIRO DE MERCADERÍAS EN LA EMPRESA X</textarea>
-
-    <label>Fecha</label>
-    <input type="text" id="fecha" value="LOS ÁNGELES, 14 DE JUNIO DE 2025" />
-
-    <button type="submit">Generar Poder PDF</button>
+    <div id="botones-acciones" style="display: none;">
+      <button type="button" id="modificar">Modificar</button>
+      <button type="button" id="btn-generar">Generar PDF</button>
+    </div>
   </form>
+
+  <div id="vista-previa-container" style="display:none;">
+    <h2>Vista Previa</h2>
+    <div id="vista-previa-contenido"></div>
+  </div>
+
+  <p style="color:red; font-size: 0.9em;">
+    Si el currículum se abre y pide contraseña, solo cancele y búsquelo en la carpeta de descargas de su móvil. Luego puede compartirlo por correo o WhatsApp al Cyber para su impresión.
+  </p>
+
+  <div id="mensaje-descarga" style="display:none;" class="mensaje">
+    ✅ Su archivo se ha descargado en la carpeta "Descargas" de su dispositivo.
+  </div>
 
   <script src="script.js"></script>
 </body>
