@@ -1,28 +1,29 @@
 from fpdf import FPDF
 import io
-from PyPDF2 import PdfReader, PdfWriter, PageObject
+from PyPDF2 import PdfReader, PdfWriter
 
 def generar_pdf(data):
     pdf = FPDF()
     pdf.add_page()
 
-    # Dibujar líneas verticales para diseño moderno
-    pdf.set_draw_color(100, 100, 255)
-    pdf.set_line_width(0.5)
-    pdf.line(70, 10, 70, 287)  # Línea vertical izquierda
-    pdf.line(140, 10, 140, 287)  # Línea vertical derecha
-
-    # Título principal
+    # Título principal (nombre)
     pdf.set_font("Arial", "B", 22)
     pdf.set_text_color(40, 40, 80)
     nombre = data.get("nombre", "").upper()
     pdf.cell(0, 15, nombre, ln=1, align="C")
 
-    # Línea horizontal
+    # Posición actual después del nombre
+    y_actual = pdf.get_y() + 5
+
+    # Dibujar columna lateral ancha semitransparente (simulada con gris claro)
+    pdf.set_fill_color(230, 230, 230)  # Color claro
+    pdf.rect(10, y_actual, 40, 250 - y_actual, 'F')
+
+    # Línea horizontal decorativa
     pdf.set_draw_color(50, 50, 150)
     pdf.set_line_width(0.8)
-    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-    pdf.ln(5)
+    pdf.line(10, y_actual, 200, y_actual)
+    pdf.ln(8)
 
     # Datos personales
     pdf.set_font("Arial", "B", 14)
@@ -106,23 +107,22 @@ def generar_pdf(data):
     pdf_bytes = pdf.output(dest='S').encode('latin1')
     pdf_buffer = io.BytesIO(pdf_bytes)
 
-    # Leer el PDF base
+    # Leer PDF base
     reader = PdfReader(pdf_buffer)
     writer = PdfWriter()
 
-    # Agregar marca de agua en cada página
+    # Agregar marca de agua grande
     for page in reader.pages:
-        watermark_pdf = FPDF()
-        watermark_pdf.add_page()
-        watermark_pdf.set_font("Arial", "B", 50)
-        watermark_pdf.set_text_color(200, 200, 200)
-        watermark_pdf.rotate(45, x=None, y=None)
-        watermark_pdf.text(40, 150, "CYBERNOVA")
-        wm_bytes = watermark_pdf.output(dest='S').encode('latin1')
+        wm_pdf = FPDF()
+        wm_pdf.add_page()
+        wm_pdf.set_font("Arial", "B", 80)
+        wm_pdf.set_text_color(200, 200, 200)
+        wm_pdf.rotate(45, x=None, y=None)
+        wm_pdf.text(20, 200, "CYBERNOVA")
+        wm_bytes = wm_pdf.output(dest='S').encode('latin1')
         wm_buffer = io.BytesIO(wm_bytes)
         wm_reader = PdfReader(wm_buffer)
 
-        # Crear nueva página combinada
         page.merge_page(wm_reader.pages[0])
         writer.add_page(page)
 
