@@ -40,10 +40,10 @@ def generar_pdf(data, admin=False):
     pdf.set_font("Arial", "", 12)
 
     campos = [
+        ("RUT", data.get("rut", "")),
         ("DIRECCIÓN", data.get("direccion", "")),
         ("FECHA DE NACIMIENTO", data.get("fecha_nacimiento", "")),
         ("NACIONALIDAD", data.get("nacionalidad", "")),
-        ("RUT", data.get("rut", "")),
         ("ESTADO CIVIL", data.get("estado_civil", "")),
         ("SISTEMA DE SALUD", data.get("sistema_salud", "")),
         ("AFP", data.get("afp", "")),
