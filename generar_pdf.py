@@ -96,11 +96,15 @@ def generar_pdf(data, admin=False):
 
     # Añadir los datos de formación
     pdf.set_font("Arial", "", 12)
-    for f, e, g in zip(fechas, establecimientos, grados):
-        if f and e and g:  # Solo agregar si todos los campos tienen datos
+    for i in range(len(fechas)):
+        fecha = fechas[i] if i < len(fechas) else ""
+        establecimiento = establecimientos[i] if i < len(establecimientos) else ""
+        grado = grados[i] if i < len(grados) else ""
+        
+        if fecha and establecimiento and grado:  # Solo agregar si todos los campos tienen datos
             pdf.set_font("Arial", "", 12)
-            pdf.cell(60, 8, f, border=0)
-            pdf.multi_cell(0, 8, f"{e.upper()} ({g.upper()})", border=0)
+            pdf.cell(60, 8, fecha, border=0)
+            pdf.multi_cell(0, 8, f"{establecimiento.upper()} ({grado.upper()})", border=0)
     pdf.ln(3)
 
     # Línea divisoria
@@ -133,11 +137,15 @@ def generar_pdf(data, admin=False):
 
     # Añadir los datos de experiencia laboral
     pdf.set_font("Arial", "", 12)
-    for f, emp, c in zip(fechas_lab, empresas, cargos):
-        if f and emp and c:  # Solo agregar si todos los campos tienen datos
+    for i in range(len(fechas_lab)):
+        fecha_lab = fechas_lab[i] if i < len(fechas_lab) else ""
+        empresa = empresas[i] if i < len(empresas) else ""
+        cargo = cargos[i] if i < len(cargos) else ""
+        
+        if fecha_lab and empresa and cargo:  # Solo agregar si todos los campos tienen datos
             pdf.set_font("Arial", "", 12)
-            pdf.cell(60, 8, f, border=0)
-            pdf.multi_cell(0, 8, f"{emp.upper()}, {c.upper()}", border=0)
+            pdf.cell(60, 8, fecha_lab, border=0)
+            pdf.multi_cell(0, 8, f"{empresa.upper()}, {cargo.upper()}", border=0)
 
     # Convertir a bytes
     pdf_bytes = pdf.output(dest='S').encode('latin1')
