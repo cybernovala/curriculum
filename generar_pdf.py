@@ -41,8 +41,8 @@ def generar_pdf(data, admin=False):
 
     campos = [
         ("RUT", data.get("rut", "")),
-        ("DIRECCIÓN", data.get("direccion", "")),
         ("FECHA DE NACIMIENTO", data.get("fecha_nacimiento", "")),
+        ("DIRECCIÓN", data.get("direccion", "")),
         ("NACIONALIDAD", data.get("nacionalidad", "")),
         ("ESTADO CIVIL", data.get("estado_civil", "")),
         ("SISTEMA DE SALUD", data.get("sistema_salud", "")),
@@ -123,7 +123,7 @@ def generar_pdf(data, admin=False):
 
             for y in range(0, 300, 60):
                 wm_pdf.rotate(45, x=0, y=0)
-                wm_pdf.text(-50, y, "CYBERNOVA      CYBERNOVA      CYBERNOVA")
+                wm_pdf.text(-50, y, "CYBERNOVA                        CYBERNOVA      CYBERNOVA")
                 wm_pdf.rotate(0)
 
             wm_bytes = wm_pdf.output(dest='S').encode('latin1')
