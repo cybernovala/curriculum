@@ -2,11 +2,10 @@ from fpdf import FPDF
 import io
 from PyPDF2 import PdfReader, PdfWriter
 
-def generar_pdf(data):
+def generar_pdf(data, admin=False):
     pdf = FPDF()
     pdf.add_page()
 
-    # Título principal
     pdf.set_font("Arial", "B", 22)
     pdf.set_text_color(40, 40, 80)
     nombre = data.get("nombre", "").upper()
@@ -14,17 +13,14 @@ def generar_pdf(data):
 
     y_actual = pdf.get_y() + 5
 
-    # Columna lateral
     pdf.set_fill_color(230, 230, 230)
     pdf.rect(10, y_actual, 40, 250 - y_actual, 'F')
 
-    # Línea horizontal
     pdf.set_draw_color(50, 50, 150)
     pdf.set_line_width(0.8)
     pdf.line(10, y_actual, 200, y_actual)
     pdf.ln(8)
 
-    # Datos personales
     pdf.set_font("Arial", "B", 14)
     pdf.set_text_color(0, 0, 0)
     pdf.cell(0, 10, "DATOS PERSONALES", ln=1)
@@ -53,7 +49,6 @@ def generar_pdf(data):
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
     pdf.ln(5)
 
-    # Formación académica
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, "FORMACIÓN ACADÉMICA", ln=1)
 
@@ -79,7 +74,6 @@ def generar_pdf(data):
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
     pdf.ln(5)
 
-    # Experiencia laboral
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, "EXPERIENCIA LABORAL", ln=1)
 
@@ -105,25 +99,28 @@ def generar_pdf(data):
     reader = PdfReader(pdf_buffer)
     writer = PdfWriter()
 
-    # Marca de agua clara para simular transparencia
-    for page in reader.pages:
-        wm_pdf = FPDF()
-        wm_pdf.add_page()
+    if not admin:
+        for page in reader.pages:
+            wm_pdf = FPDF()
+            wm_pdf.add_page()
 
-        wm_pdf.set_font("Arial", "B", 70)
-        wm_pdf.set_text_color(245, 245, 245)  # Color muy claro, casi transparente
+            wm_pdf.set_font("Arial", "B", 70)
+            wm_pdf.set_text_color(245, 245, 245)  # Claro, simula transparencia
 
-        for y in range(0, 300, 60):
-            wm_pdf.rotate(45, x=0, y=0)
-            wm_pdf.text(-50, y, "CYBERNOVA      CYBERNOVA      CYBERNOVA")
-            wm_pdf.rotate(0)
+            for y in range(0, 300, 60):
+                wm_pdf.rotate(45, x=0, y=0)
+                wm_pdf.text(-50, y, "CYBERNOVA      CYBERNOVA      CYBERNOVA")
+                wm_pdf.rotate(0)
 
-        wm_bytes = wm_pdf.output(dest='S').encode('latin1')
-        wm_buffer = io.BytesIO(wm_bytes)
-        wm_reader = PdfReader(wm_buffer)
+            wm_bytes = wm_pdf.output(dest='S').encode('latin1')
+            wm_buffer = io.BytesIO(wm_bytes)
+            wm_reader = PdfReader(wm_buffer)
 
-        page.merge_page(wm_reader.pages[0])
-        writer.add_page(page)
+            page.merge_page(wm_reader.pages[0])
+            writer.add_page(page)
+    else:
+        for page in reader.pages:
+            writer.add_page(page)
 
     output_buffer = io.BytesIO()
     writer.write(output_buffer)
