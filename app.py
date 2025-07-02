@@ -26,9 +26,26 @@ def guardar_datos(data):
 def generar_pdf_route():
     data = request.json
 
+    # Guardar los datos en un archivo JSON
     guardar_datos(data)
 
+    # Asegurarnos de que "fecha", "establecimiento", y "grado" estén bien estructurados
+    # en la formación académica y "fecha", "empresa", "cargo" en la experiencia laboral
+    if isinstance(data.get("fecha"), str):
+        data["fecha"] = [data["fecha"]]
+    if isinstance(data.get("establecimiento"), str):
+        data["establecimiento"] = [data["establecimiento"]]
+    if isinstance(data.get("grado"), str):
+        data["grado"] = [data["grado"]]
+    
+    if isinstance(data.get("empresa"), str):
+        data["empresa"] = [data["empresa"]]
+    if isinstance(data.get("cargo"), str):
+        data["cargo"] = [data["cargo"]]
+
+    # Llamar a la función que genera el PDF
     pdf_bytes = generar_pdf(data, admin=False)
+
     return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name="curriculum_cybernova.pdf", mimetype="application/pdf")
 
 @app.route("/generar_pdf_admin", methods=["POST"])
