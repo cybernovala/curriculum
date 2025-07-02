@@ -10,16 +10,16 @@ def generar_pdf(data, admin=False):
     pdf.set_font("Arial", "B", 22)
     pdf.set_text_color(40, 40, 80)
     nombre = data.get("nombre", "").upper()
-    pdf.cell(0, 15, nombre, ln=1, align="C")
+    pdf.cell(0, 12, nombre, ln=1, align="C")  # Espacio reducido
 
     # Email y Teléfono debajo del título
     pdf.set_font("Arial", "", 12)
     email = data.get("email", "").upper()
     telefono = data.get("telefono", "").upper()
     if email:
-        pdf.cell(0, 10, email, ln=1, align="C")
+        pdf.cell(0, 6, email, ln=1, align="C")  # Espacio reducido
     if telefono:
-        pdf.cell(0, 10, telefono, ln=1, align="C")
+        pdf.cell(0, 6, telefono, ln=1, align="C")  # Espacio reducido
 
     y_actual = pdf.get_y() + 5
 
