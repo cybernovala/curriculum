@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Generar PDF sin Marca - ADMIN</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    textarea { width: 100%; height: 250px; }
+    button { margin-top: 10px; padding: 10px 20px; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <h2>Generar PDF sin marca de agua (ADMIN)</h2>
+  <p>⚠️ Pega aquí los datos completos en formato JSON (desde el archivo o consulta /ver_datos)</p>
+  <textarea id="datos"></textarea>
+  <br>
+  <button onclick="generarPDF()">Generar y Descargar</button>
+
+  <script>
+    async function generarPDF() {
+      const datosTexto = document.getElementById("datos").value;
+      let jsonData;
+
+      try {
+        jsonData = JSON.parse(datosTexto);
+      } catch (e) {
+        alert("⚠️ Los datos no tienen formato JSON válido.");
+        return;
+      }
+
+      const payload = {
+        clave: "@@ADMIN123@@", // tu clave
+        data: jsonData
+      };
+
+      const response = await fetch("https://curriculum-9s9x.onrender.com/generar_pdf_admin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        alert("❌ Error: " + (await response.text()));
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "curriculum_sin_marca.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
