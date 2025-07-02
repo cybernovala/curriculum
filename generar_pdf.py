@@ -116,10 +116,9 @@ def generar_pdf(data, admin=False):
         pdf.set_text_color(180, 180, 180)
         pdf.text(60, 100, "Sin marca de agua")
 
-    # Generar el PDF en memoria
-    pdf_output = io.BytesIO()
-    pdf.output(pdf_output)
-    pdf_output.seek(0)
+    # Generar el PDF en memoria (como string de bytes)
+    pdf_output = pdf.output(dest='S')  # Esto nos da el PDF como un string de bytes
+    pdf_output = io.BytesIO(pdf_output.encode('latin1'))  # Convertimos el string a BytesIO
 
     # Crear el archivo PDF final
     pdf_reader = PdfReader(pdf_output)
