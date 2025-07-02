@@ -89,7 +89,7 @@ def generar_pdf(data, admin=False):
     pdf.set_font("Arial", "", 12)
     for f, e, g in zip(fechas, establecimientos, grados):
         pdf.set_font("Arial", "", 12)
-        pdf.cell(30, 8, f, border=0)
+        pdf.cell(60, 8, f, border=0)
         pdf.multi_cell(0, 8, f"{e.upper()} ({g.upper()})", border=0)
     pdf.ln(3)
 
@@ -117,7 +117,7 @@ def generar_pdf(data, admin=False):
     pdf.set_font("Arial", "", 12)
     for f, emp, c in zip(fechas_lab, empresas, cargos):
         pdf.set_font("Arial", "", 12)
-        pdf.cell(30, 8, f, border=0)
+        pdf.cell(60, 8, f, border=0)
         pdf.multi_cell(0, 8, f"{emp.upper()}, {c.upper()}", border=0)
 
     # Convertir a bytes y aplicar marca de agua si no es admin
@@ -135,7 +135,7 @@ def generar_pdf(data, admin=False):
             wm_pdf.set_text_color(245, 245, 245)
 
             # Marca de agua inclinada
-            for y in range(0, 300, 60):
+            for y in range(0, 300, 80):
                 wm_pdf.rotate(45, x=0, y=0)
                 wm_pdf.text(-50, y, "  CYBERNOVA     CYBERNOVA       CYBERNOVA")
                 wm_pdf.rotate(0)
