@@ -76,10 +76,12 @@ def generar_pdf(data, admin=False):
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, "FORMACIÓN ACADÉMICA", ln=1)
 
-    fechas = data.get("fecha", [])
+    # Asegurar que las fechas, establecimientos y grados sean listas
+    fechas = data.get("fecha_formacion", [])
     establecimientos = data.get("establecimiento", [])
     grados = data.get("grado", [])
 
+    # Convertir a listas si no lo son
     if not isinstance(fechas, list):
         fechas = [fechas]
     if not isinstance(establecimientos, list):
@@ -104,16 +106,17 @@ def generar_pdf(data, admin=False):
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, "EXPERIENCIA LABORAL", ln=1)
 
-    fechas_lab = data.get("fecha", [])
+    # Asegurar que las fechas de experiencia laboral sean listas
+    fechas_lab = data.get("fecha_experiencia", [])
     empresas = data.get("empresa", [])
     cargos = data.get("cargo", [])
 
+    if not isinstance(fechas_lab, list):
+        fechas_lab = [fechas_lab]
     if not isinstance(empresas, list):
         empresas = [empresas]
     if not isinstance(cargos, list):
         cargos = [cargos]
-    if not isinstance(fechas_lab, list):
-        fechas_lab = [fechas_lab]
 
     pdf.set_font("Arial", "", 12)
     for f, emp, c in zip(fechas_lab, empresas, cargos):
