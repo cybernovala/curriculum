@@ -10,6 +10,7 @@ class PDFWithFooter(FPDF):
         self.cell(0, 10, "Curriculum vitae", 0, 0, "R")
 
 def generar_pdf(data, admin=False):
+    # Crear un objeto PDF
     pdf = PDFWithFooter()
     pdf.add_page()
 
@@ -115,7 +116,21 @@ def generar_pdf(data, admin=False):
         pdf.set_text_color(180, 180, 180)
         pdf.text(60, 100, "Sin marca de agua")
 
+    # Generar el PDF en memoria
     pdf_output = io.BytesIO()
     pdf.output(pdf_output)
     pdf_output.seek(0)
-    return pdf_output.read()
+
+    # Crear el archivo PDF final
+    pdf_reader = PdfReader(pdf_output)
+    pdf_writer = PdfWriter()
+
+    for page_num in range(len(pdf_reader.pages)):
+        page = pdf_reader.pages[page_num]
+        pdf_writer.add_page(page)
+
+    final_pdf_output = io.BytesIO()
+    pdf_writer.write(final_pdf_output)
+    final_pdf_output.seek(0)
+
+    return final_pdf_output.read()
