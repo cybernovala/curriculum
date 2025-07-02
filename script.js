@@ -1,3 +1,4 @@
+// Función para agregar más campos de formación académica o laboral
 function agregarCampo(seccion) {
   const contenedor = document.getElementById(seccion);
   const grupo = document.createElement("div");
@@ -5,13 +6,13 @@ function agregarCampo(seccion) {
 
   if (seccion === "academico") {
     grupo.innerHTML = `
-      <input type="text" name="fecha" placeholder="2020-2025" required />
+      <input type="text" name="fecha_formacion" placeholder="2020-2025" required />
       <input type="text" name="establecimiento" placeholder="Establecimiento" required />
       <input type="text" name="grado" placeholder="E.Basica - Media Completa-Incompleta....." required />
     `;
   } else if (seccion === "laboral") {
     grupo.innerHTML = `
-      <input type="text" name="fecha" placeholder="2020-2025" required />
+      <input type="text" name="fecha_experiencia" placeholder="2020-2025" required />
       <input type="text" name="empresa" placeholder="Empresa" required />
       <input type="text" name="cargo" placeholder="Cargo" required />
     `;
@@ -19,6 +20,7 @@ function agregarCampo(seccion) {
   contenedor.insertBefore(grupo, contenedor.lastElementChild);
 }
 
+// Evento de Vista Previa
 document.getElementById("vista-previa").addEventListener("click", () => {
   const form = document.getElementById("formulario");
   const datos = new FormData(form);
@@ -31,11 +33,13 @@ document.getElementById("vista-previa").addEventListener("click", () => {
   document.getElementById("botones-acciones").style.display = "block";
 });
 
+// Evento para modificar datos
 document.getElementById("modificar").addEventListener("click", () => {
   document.getElementById("vista-previa-container").style.display = "none";
   document.getElementById("botones-acciones").style.display = "none";
 });
 
+// Evento para generar PDF
 document.getElementById("btn-generar").addEventListener("click", async () => {
   const form = document.getElementById("formulario");
   const datos = new FormData(form);
