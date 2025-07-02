@@ -6,28 +6,30 @@ def generar_pdf(data, admin=False):
     pdf = FPDF()
     pdf.add_page()
 
-    # Título: Nombre
+    # Título (Nombre completo)
     pdf.set_font("Arial", "B", 22)
     pdf.set_text_color(40, 40, 80)
     nombre = data.get("nombre", "").upper()
     pdf.cell(0, 15, nombre, ln=1, align="C")
 
-    # Email y Teléfono debajo del título
+    # Correo y teléfono debajo del nombre
     pdf.set_font("Arial", "", 12)
+    pdf.set_text_color(0, 0, 0)
     email = data.get("email", "").upper()
     telefono = data.get("telefono", "").upper()
+
     if email:
-        pdf.cell(0, 10, email, ln=1, align="C")
+        pdf.cell(0, 6, f"📧 {email}", ln=1, align="C")
     if telefono:
-        pdf.cell(0, 10, telefono, ln=1, align="C")
+        pdf.cell(0, 6, f"📱 {telefono}", ln=1, align="C")
 
     y_actual = pdf.get_y() + 5
 
-    # Columna lateral
+    # Columna lateral decorativa
     pdf.set_fill_color(230, 230, 230)
     pdf.rect(10, y_actual, 40, 250 - y_actual, 'F')
 
-    # Línea horizontal decorativa
+    # Línea horizontal
     pdf.set_draw_color(50, 50, 150)
     pdf.set_line_width(0.8)
     pdf.line(10, y_actual, 200, y_actual)
@@ -35,7 +37,6 @@ def generar_pdf(data, admin=False):
 
     # Datos personales
     pdf.set_font("Arial", "B", 14)
-    pdf.set_text_color(0, 0, 0)
     pdf.cell(0, 10, "DATOS PERSONALES", ln=1)
     pdf.set_font("Arial", "", 12)
 
@@ -55,6 +56,7 @@ def generar_pdf(data, admin=False):
             pdf.multi_cell(0, 8, f"{label}: {valor.upper()}", border=0)
     pdf.ln(3)
 
+    # Línea separadora
     pdf.set_draw_color(150, 150, 150)
     pdf.set_line_width(0.5)
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
@@ -81,6 +83,7 @@ def generar_pdf(data, admin=False):
         pdf.multi_cell(0, 8, texto, border=0)
     pdf.ln(3)
 
+    # Línea separadora
     pdf.set_draw_color(150, 150, 150)
     pdf.set_line_width(0.5)
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
@@ -106,7 +109,7 @@ def generar_pdf(data, admin=False):
         texto = f"{f} - {emp.upper()}, {c.upper()}"
         pdf.multi_cell(0, 8, texto, border=0)
 
-    # Marca de agua
+    # Generar PDF sin o con marca de agua
     pdf_bytes = pdf.output(dest='S').encode('latin1')
     pdf_buffer = io.BytesIO(pdf_bytes)
 
@@ -119,7 +122,7 @@ def generar_pdf(data, admin=False):
             wm_pdf.add_page()
 
             wm_pdf.set_font("Arial", "B", 70)
-            wm_pdf.set_text_color(245, 245, 245)
+            wm_pdf.set_text_color(245, 245, 245)  # Claro, simula transparencia
 
             for y in range(0, 300, 60):
                 wm_pdf.rotate(45, x=0, y=0)
