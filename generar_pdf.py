@@ -7,7 +7,7 @@ class PDFWithFooter(FPDF):
         self.set_y(-15)
         self.set_font("Arial", "BI", 18)
         self.set_text_color(200, 200, 200)
-        self.cell(0, 10, "Curriculum vitae", 0, 0, "L")
+        self.cell(0, 10, "Curriculum vitae", 0, 0, "R")
 
 def generar_pdf(data, admin=False):
     pdf = PDFWithFooter()
@@ -89,7 +89,7 @@ def generar_pdf(data, admin=False):
     pdf.set_font("Arial", "", 12)
     for f, e, g in zip(fechas, establecimientos, grados):
         pdf.set_font("Arial", "", 12)
-        pdf.cell(30, 8, f, border=0)
+        pdf.cell(60, 8, f, border=0)
         pdf.multi_cell(0, 8, f"{e.upper()} ({g.upper()})", border=0)
     pdf.ln(3)
 
@@ -117,7 +117,7 @@ def generar_pdf(data, admin=False):
     pdf.set_font("Arial", "", 12)
     for f, emp, c in zip(fechas_lab, empresas, cargos):
         pdf.set_font("Arial", "", 12)
-        pdf.cell(30, 8, f, border=0)
+        pdf.cell(60, 8, f, border=0)
         pdf.multi_cell(0, 8, f"{emp.upper()}, {c.upper()}", border=0)
 
     # Convertir a bytes y aplicar marca de agua si no es admin
