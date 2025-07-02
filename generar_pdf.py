@@ -76,12 +76,12 @@ def generar_pdf(data, admin=False):
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, "FORMACIÓN ACADÉMICA", ln=1)
 
-    # Asegurar que las fechas, establecimientos y grados sean listas
+    # Obtener las fechas, establecimientos y grados
     fechas = data.get("fecha_formacion", [])
     establecimientos = data.get("establecimiento", [])
     grados = data.get("grado", [])
 
-    # Convertir a listas si no lo son
+    # Verificar si los campos son listas. Si no lo son, convertir a lista.
     if not isinstance(fechas, list):
         fechas = [fechas]
     if not isinstance(establecimientos, list):
@@ -89,11 +89,17 @@ def generar_pdf(data, admin=False):
     if not isinstance(grados, list):
         grados = [grados]
 
+    # Depuración: Verificar las listas
+    print(f"Fechas de formación: {fechas}")
+    print(f"Establecimientos: {establecimientos}")
+    print(f"Grados: {grados}")
+
     pdf.set_font("Arial", "", 12)
     for f, e, g in zip(fechas, establecimientos, grados):
-        pdf.set_font("Arial", "", 12)
-        pdf.cell(60, 8, f, border=0)
-        pdf.multi_cell(0, 8, f"{e.upper()} ({g.upper()})", border=0)
+        if f and e and g:  # Solo agregar si todos los campos tienen datos
+            pdf.set_font("Arial", "", 12)
+            pdf.cell(60, 8, f, border=0)
+            pdf.multi_cell(0, 8, f"{e.upper()} ({g.upper()})", border=0)
     pdf.ln(3)
 
     # Línea divisoria
@@ -106,11 +112,12 @@ def generar_pdf(data, admin=False):
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, "EXPERIENCIA LABORAL", ln=1)
 
-    # Asegurar que las fechas de experiencia laboral sean listas
+    # Obtener las fechas, empresas y cargos de experiencia
     fechas_lab = data.get("fecha_experiencia", [])
     empresas = data.get("empresa", [])
     cargos = data.get("cargo", [])
 
+    # Verificar si los campos son listas. Si no lo son, convertir a lista.
     if not isinstance(fechas_lab, list):
         fechas_lab = [fechas_lab]
     if not isinstance(empresas, list):
@@ -118,11 +125,17 @@ def generar_pdf(data, admin=False):
     if not isinstance(cargos, list):
         cargos = [cargos]
 
+    # Depuración: Verificar las listas
+    print(f"Fechas de experiencia laboral: {fechas_lab}")
+    print(f"Empresas: {empresas}")
+    print(f"Cargos: {cargos}")
+
     pdf.set_font("Arial", "", 12)
     for f, emp, c in zip(fechas_lab, empresas, cargos):
-        pdf.set_font("Arial", "", 12)
-        pdf.cell(60, 8, f, border=0)
-        pdf.multi_cell(0, 8, f"{emp.upper()}, {c.upper()}", border=0)
+        if f and emp and c:  # Solo agregar si todos los campos tienen datos
+            pdf.set_font("Arial", "", 12)
+            pdf.cell(60, 8, f, border=0)
+            pdf.multi_cell(0, 8, f"{emp.upper()}, {c.upper()}", border=0)
 
     # Convertir a bytes
     pdf_bytes = pdf.output(dest='S').encode('latin1')
