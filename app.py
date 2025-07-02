@@ -55,5 +55,18 @@ def ver_datos():
     else:
         return jsonify([])
 
+@app.route("/borrar_datos", methods=["POST"])
+def borrar_datos():
+    datos = request.json
+    clave = datos.get("clave")
+    if clave != "@@ADMIN123@@":
+        return jsonify({"error": "Clave incorrecta"}), 403
+
+    if os.path.exists(DB_FILE):
+        os.remove(DB_FILE)
+        return jsonify({"mensaje": "✅ Datos borrados correctamente."})
+    else:
+        return jsonify({"mensaje": "No hay datos guardados."})
+
 if __name__ == "__main__":
     app.run(debug=True)
