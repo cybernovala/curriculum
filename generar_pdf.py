@@ -135,20 +135,10 @@ def generar_pdf(data, admin=False):
             wm_pdf.set_text_color(245, 245, 245)
 
             # Marca de agua inclinada
-            for y in range(0, 300, 60):
-    # Centramos el texto en la página con rotación de 45°
-    wm_pdf.rotate(45, x=105, y=105)  # (105, 105) es el centro de una página A4 en mm (210x297 mm)
-
-    # Calcular el ancho del texto para asegurarse de que no se corte
-    texto = ". . . . CYBERNOVA"
-    texto_ancho = wm_pdf.get_string_width(texto)  # Medimos el ancho del texto
-
-    # Colocamos el texto en la posición central (en base a la rotación)
-    wm_pdf.text(105 - (texto_ancho / 2), y, texto)
-
-    # Restauramos la rotación a 0 grados
-    wm_pdf.rotate(0)
-
+             for y in range(0, 300, 60):
+                wm_pdf.rotate(45, x=0, y=0)
+                wm_pdf.text(-50, y, ". . . . CYBERNOVA")
+                wm_pdf.rotate(0)
 
             wm_bytes = wm_pdf.output(dest='S').encode('latin1')
             wm_buffer = io.BytesIO(wm_bytes)
