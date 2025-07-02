@@ -87,4 +87,35 @@ def generar_pdf(data, admin=False):
         grados = [grados]
 
     pdf.set_font("Arial", "", 12)
-    for f, e,
+    for f, e, g in zip(fechas, establecimientos, grados):
+        pdf.cell(0, 8, f"{g} - {e} ({f})", ln=1)
+
+    # Experiencia Laboral
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 10, "EXPERIENCIA LABORAL", ln=1)
+
+    cargos = data.get("cargo", [])
+    lugares = data.get("lugar", [])
+    periodos = data.get("periodo", [])
+
+    if not isinstance(cargos, list):
+        cargos = [cargos]
+    if not isinstance(lugares, list):
+        lugares = [lugares]
+    if not isinstance(periodos, list):
+        periodos = [periodos]
+
+    pdf.set_font("Arial", "", 12)
+    for c, l, p in zip(cargos, lugares, periodos):
+        pdf.multi_cell(0, 8, f"{c} - {l} ({p})", border=0)
+
+    if admin:
+        # Marca de agua (solo admin)
+        pdf.set_font("Arial", "I", 100)
+        pdf.set_text_color(180, 180, 180)
+        pdf.text(60, 100, "Sin marca de agua")
+
+    pdf_output = io.BytesIO()
+    pdf.output(pdf_output)
+    pdf_output.seek(0)
+    return pdf_output.read()
