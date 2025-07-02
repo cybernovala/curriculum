@@ -41,16 +41,18 @@ document.getElementById("btn-generar").addEventListener("click", async () => {
   const datos = new FormData(form);
   const json = {};
 
+  // Convertir los datos del formulario en un objeto JSON correctamente estructurado
   for (let [key, value] of datos.entries()) {
     if (!json[key]) {
       json[key] = value;
     } else if (!Array.isArray(json[key])) {
-      json[key] = [json[key], value];
+      json[key] = [json[key], value]; // Convertir en array si ya existe un valor
     } else {
-      json[key].push(value);
+      json[key].push(value); // Añadir al array si ya existe
     }
   }
 
+  // Enviar los datos al servidor para generar el PDF
   const response = await fetch("https://curriculum-9s9x.onrender.com/generar_pdf", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
