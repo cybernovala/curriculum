@@ -137,7 +137,7 @@ def generar_pdf(data, admin=False):
             # Marca de agua inclinada
          for y in range(0, 300, 60):
             wm_pdf.rotate(45, x=0, y=0)
-            wm_pdf.text(-25, y, ". . . . CYBERNOVA")
+            wm_pdf.text(-25, y, ". CYBERNOVA")
             wm_pdf.rotate(0)
 
             wm_bytes = wm_pdf.output(dest='S').encode('latin1')
