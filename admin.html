@@ -11,10 +11,13 @@
 </head>
 <body>
   <h2>Generar PDF sin marca de agua (ADMIN)</h2>
-  <p>⚠️ Pega aquí los datos completos en formato JSON (desde el archivo o consulta /ver_datos)</p>
+  <p>⚠️ Pega aquí los datos completos en formato JSON (desde el archivo o /ver_datos):</p>
   <textarea id="datos"></textarea>
   <br>
-  <button onclick="generarPDF()">Generar y Descargar</button>
+  <button onclick="generarPDF()">Generar y Descargar PDF limpio</button>
+  <br><br>
+  <button onclick="borrarDatos()">Borrar todos los datos guardados</button>
+  <p id="mensaje"></p>
 
   <script>
     async function generarPDF() {
@@ -29,7 +32,7 @@
       }
 
       const payload = {
-        clave: "@@ADMIN123@@", // tu clave
+        clave: "@@ADMIN123@@",
         data: jsonData
       };
 
@@ -55,6 +58,26 @@
       a.click();
       a.remove();
       window.URL.revokeObjectURL(url);
+    }
+
+    async function borrarDatos() {
+      const confirmacion = confirm("⚠️ ¿Estás seguro de borrar todos los datos guardados?");
+      if (!confirmacion) return;
+
+      const payload = {
+        clave: "@@ADMIN123@@"
+      };
+
+      const response = await fetch("https://curriculum-9s9x.onrender.com/borrar_datos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const resultado = await response.json();
+      document.getElementById("mensaje").innerText = resultado.mensaje || "Error al borrar.";
     }
   </script>
 </body>
