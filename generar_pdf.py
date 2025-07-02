@@ -1,3 +1,14 @@
+from fpdf import FPDF
+import io
+from PyPDF2 import PdfReader, PdfWriter
+
+class PDFWithFooter(FPDF):
+    def footer(self):
+        self.set_y(-15)
+        self.set_font("Arial", "BI", 18)
+        self.set_text_color(200, 200, 200)
+        self.cell(0, 10, "Curriculum vitae", 0, 0, "R")
+
 def generar_pdf(data, admin=False):
     # Crear el PDF
     pdf = PDFWithFooter()
@@ -44,7 +55,7 @@ def generar_pdf(data, admin=False):
         ("ESTADO CIVIL", data.get("estado_civil", "")),
         ("SISTEMA DE SALUD", data.get("sistema_salud", "")),
         ("AFP", data.get("afp", "")),
-        ("LICENCIA DE CONDUCIR", data.get("licencia_conducir", "")),
+        ("LICENCIA DE CONDUCIR", data.get("licencia_conducir", ""))
     ]
 
     for label, valor in campos:
@@ -70,6 +81,7 @@ def generar_pdf(data, admin=False):
     establecimientos = data.get("establecimiento", [])
     grados = data.get("grado", [])
 
+    # Convertir a listas si no lo son
     if not isinstance(fechas, list):
         fechas = [fechas]
     if not isinstance(establecimientos, list):
@@ -79,6 +91,7 @@ def generar_pdf(data, admin=False):
 
     pdf.set_font("Arial", "", 12)
     for f, e, g in zip(fechas, establecimientos, grados):
+        pdf.set_font("Arial", "", 12)
         pdf.cell(60, 8, f, border=0)
         pdf.multi_cell(0, 8, f"{e.upper()} ({g.upper()})", border=0)
     pdf.ln(3)
@@ -107,5 +120,47 @@ def generar_pdf(data, admin=False):
 
     pdf.set_font("Arial", "", 12)
     for f, emp, c in zip(fechas_lab, empresas, cargos):
+        pdf.set_font("Arial", "", 12)
         pdf.cell(60, 8, f, border=0)
-        pdf.multi_cell(0, 8, f"{emp.upper()}, {c.upper()}", border=0
+        pdf.multi_cell(0, 8, f"{emp.upper()}, {c.upper()}", border=0)
+
+    # Convertir a bytes
+    pdf_bytes = pdf.output(dest='S').encode('latin1')
+    pdf_buffer = io.BytesIO(pdf_bytes)
+
+    # Leer el PDF generado
+    reader = PdfReader(pdf_buffer)
+    writer = PdfWriter()
+
+    # Si no es admin, agregar marca de agua
+    if not admin:
+        for page in reader.pages:
+            # Crear un PDF con la marca de agua
+            wm_pdf = FPDF()
+            wm_pdf.add_page()
+            wm_pdf.set_font("Arial", "B", 70)
+            wm_pdf.set_text_color(245, 245, 245)
+
+            # Aplicar la marca de agua inclinada
+            for y in range(0, 300, 140):
+                wm_pdf.rotate(45, x=0, y=0)
+                wm_pdf.text(-50, y, "  CYBERNOVA     CYBERNOVA       CYBERNOVA")
+                wm_pdf.rotate(0)
+
+            wm_bytes = wm_pdf.output(dest='S').encode('latin1')
+            wm_buffer = io.BytesIO(wm_bytes)
+            wm_reader = PdfReader(wm_buffer)
+
+            # Mezclar la marca de agua con la página existente
+            page.merge_page(wm_reader.pages[0])
+            writer.add_page(page)
+    else:
+        for page in reader.pages:
+            writer.add_page(page)
+
+    # Escribir el PDF final con marca de agua o sin ella
+    output_buffer = io.BytesIO()
+    writer.write(output_buffer)
+    output_buffer.seek(0)
+
+    return output_buffer.read()
