@@ -10,20 +10,20 @@ def generar_pdf(data, admin=False):
     pdf.set_font("Arial", "B", 22)
     pdf.set_text_color(40, 40, 80)
     nombre = data.get("nombre", "").upper()
-    pdf.cell(0, 12, nombre, ln=1, align="C")  # Espacio reducido
+    pdf.cell(0, 12, nombre, ln=1, align="C")
 
-    # Email y Teléfono debajo del título
+    # Email y Teléfono debajo
     pdf.set_font("Arial", "", 12)
     email = data.get("email", "").upper()
     telefono = data.get("telefono", "").upper()
     if email:
-        pdf.cell(0, 6, email, ln=1, align="C")  # Espacio reducido
+        pdf.cell(0, 6, email, ln=1, align="C")
     if telefono:
-        pdf.cell(0, 6, telefono, ln=1, align="C")  # Espacio reducido
+        pdf.cell(0, 6, telefono, ln=1, align="C")
 
     y_actual = pdf.get_y() + 5
 
-    # Columna lateral
+    # Columna lateral decorativa
     pdf.set_fill_color(230, 230, 230)
     pdf.rect(10, y_actual, 40, 250 - y_actual, 'F')
 
@@ -50,11 +50,16 @@ def generar_pdf(data, admin=False):
         ("LICENCIA DE CONDUCIR", data.get("licencia_conducir", ""))
     ]
 
+    # Imprimir en columnas: título a la izquierda (60), valor a la derecha (resto)
     for label, valor in campos:
         if valor:
-            pdf.multi_cell(0, 8, f"{label}: {valor.upper()}", border=0)
+            pdf.set_font("Arial", "B", 12)
+            pdf.cell(60, 8, f"{label}:", border=0)
+            pdf.set_font("Arial", "", 12)
+            pdf.multi_cell(0, 8, valor.upper(), border=0)
     pdf.ln(3)
 
+    # Línea divisoria
     pdf.set_draw_color(150, 150, 150)
     pdf.set_line_width(0.5)
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
@@ -81,6 +86,7 @@ def generar_pdf(data, admin=False):
         pdf.multi_cell(0, 8, texto, border=0)
     pdf.ln(3)
 
+    # Línea divisoria
     pdf.set_draw_color(150, 150, 150)
     pdf.set_line_width(0.5)
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
