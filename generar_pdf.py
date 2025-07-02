@@ -2,8 +2,15 @@ from fpdf import FPDF
 import io
 from PyPDF2 import PdfReader, PdfWriter
 
+class PDFWithFooter(FPDF):
+    def footer(self):
+        self.set_y(-15)
+        self.set_font("Arial", "BI", 18)
+        self.set_text_color(200, 200, 200)
+        self.cell(0, 10, "Curriculum vitae", 0, 0, "L")
+
 def generar_pdf(data, admin=False):
-    pdf = FPDF()
+    pdf = PDFWithFooter()
     pdf.add_page()
 
     # Título: Nombre
@@ -50,7 +57,6 @@ def generar_pdf(data, admin=False):
         ("LICENCIA DE CONDUCIR", data.get("licencia_conducir", ""))
     ]
 
-    # Imprimir en columnas: título a la izquierda (60), valor a la derecha (resto)
     for label, valor in campos:
         if valor:
             pdf.set_font("Arial", "B", 12)
@@ -82,8 +88,9 @@ def generar_pdf(data, admin=False):
 
     pdf.set_font("Arial", "", 12)
     for f, e, g in zip(fechas, establecimientos, grados):
-        texto = f"{f} - {e.upper()} ({g.upper()})"
-        pdf.multi_cell(0, 8, texto, border=0)
+        pdf.set_font("Arial", "", 12)
+        pdf.cell(30, 8, f, border=0)
+        pdf.multi_cell(0, 8, f"{e.upper()} ({g.upper()})", border=0)
     pdf.ln(3)
 
     # Línea divisoria
@@ -109,10 +116,11 @@ def generar_pdf(data, admin=False):
 
     pdf.set_font("Arial", "", 12)
     for f, emp, c in zip(fechas_lab, empresas, cargos):
-        texto = f"{f} - {emp.upper()}, {c.upper()}"
-        pdf.multi_cell(0, 8, texto, border=0)
+        pdf.set_font("Arial", "", 12)
+        pdf.cell(30, 8, f, border=0)
+        pdf.multi_cell(0, 8, f"{emp.upper()}, {c.upper()}", border=0)
 
-    # Marca de agua
+    # Convertir a bytes y aplicar marca de agua si no es admin
     pdf_bytes = pdf.output(dest='S').encode('latin1')
     pdf_buffer = io.BytesIO(pdf_bytes)
 
@@ -123,10 +131,10 @@ def generar_pdf(data, admin=False):
         for page in reader.pages:
             wm_pdf = FPDF()
             wm_pdf.add_page()
-
             wm_pdf.set_font("Arial", "B", 70)
             wm_pdf.set_text_color(245, 245, 245)
 
+            # Marca de agua inclinada
             for y in range(0, 300, 60):
                 wm_pdf.rotate(45, x=0, y=0)
                 wm_pdf.text(-50, y, "  CYBERNOVA     CYBERNOVA       CYBERNOVA")
