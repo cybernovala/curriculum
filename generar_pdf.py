@@ -10,7 +10,7 @@ class PDFWithFooter(FPDF):
         self.cell(0, 10, "Curriculum vitae", 0, 0, "R")
 
 def generar_pdf(data, admin=False):
-    # Crear un objeto PDF
+    # Crear el PDF
     pdf = PDFWithFooter()
     pdf.add_page()
 
@@ -89,50 +89,75 @@ def generar_pdf(data, admin=False):
 
     pdf.set_font("Arial", "", 12)
     for f, e, g in zip(fechas, establecimientos, grados):
-        pdf.cell(0, 8, f"{g} - {e} ({f})", ln=1)
+        pdf.set_font("Arial", "", 12)
+        pdf.cell(60, 8, f, border=0)
+        pdf.multi_cell(0, 8, f"{e.upper()} ({g.upper()})", border=0)
+    pdf.ln(3)
 
-    # Experiencia Laboral
+    # Línea divisoria
+    pdf.set_draw_color(150, 150, 150)
+    pdf.set_line_width(0.5)
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(5)
+
+    # Experiencia laboral
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, "EXPERIENCIA LABORAL", ln=1)
 
+    fechas_lab = data.get("fecha", [])
+    empresas = data.get("empresa", [])
     cargos = data.get("cargo", [])
-    lugares = data.get("lugar", [])
-    periodos = data.get("periodo", [])
 
+    if not isinstance(empresas, list):
+        empresas = [empresas]
     if not isinstance(cargos, list):
         cargos = [cargos]
-    if not isinstance(lugares, list):
-        lugares = [lugares]
-    if not isinstance(periodos, list):
-        periodos = [periodos]
+    if not isinstance(fechas_lab, list):
+        fechas_lab = [fechas_lab]
 
     pdf.set_font("Arial", "", 12)
-    for c, l, p in zip(cargos, lugares, periodos):
-        pdf.multi_cell(0, 8, f"{c} - {l} ({p})", border=0)
+    for f, emp, c in zip(fechas_lab, empresas, cargos):
+        pdf.set_font("Arial", "", 12)
+        pdf.cell(60, 8, f, border=0)
+        pdf.multi_cell(0, 8, f"{emp.upper()}, {c.upper()}", border=0)
 
-    if admin:
-        # Marca de agua (solo admin)
-        pdf.set_font("Arial", "I", 100)
-        pdf.set_text_color(180, 180, 180)
-        for y in range(0, 300, 60):
-            pdf.rotate(45, x=0, y=0)
-            pdf.text(-50, y, ". . . . CYBERNOVA")
-            pdf.rotate(0)
+    # Convertir a bytes
+    pdf_bytes = pdf.output(dest='S').encode('latin1')
+    pdf_buffer = io.BytesIO(pdf_bytes)
 
-    # Generar el PDF en memoria (como string de bytes)
-    pdf_output = pdf.output(dest='S')  # Esto nos da el PDF como un string de bytes
-    pdf_output = io.BytesIO(pdf_output.encode('latin1'))  # Convertimos el string a BytesIO
+    # Leer el PDF generado
+    reader = PdfReader(pdf_buffer)
+    writer = PdfWriter()
 
-    # Crear el archivo PDF final
-    pdf_reader = PdfReader(pdf_output)
-    pdf_writer = PdfWriter()
+    # Si no es admin, agregar marca de agua
+    if not admin:
+        for page in reader.pages:
+            # Crear un PDF con la marca de agua
+            wm_pdf = FPDF()
+            wm_pdf.add_page()
+            wm_pdf.set_font("Arial", "B", 70)
+            wm_pdf.set_text_color(245, 245, 245)
 
-    for page_num in range(len(pdf_reader.pages)):
-        page = pdf_reader.pages[page_num]
-        pdf_writer.add_page(page)
+            # Aplicar la marca de agua inclinada
+            for y in range(0, 300, 140):
+                wm_pdf.rotate(45, x=0, y=0)
+                wm_pdf.text(-50, y, "  CYBERNOVA     CYBERNOVA       CYBERNOVA")
+                wm_pdf.rotate(0)
 
-    final_pdf_output = io.BytesIO()
-    pdf_writer.write(final_pdf_output)
-    final_pdf_output.seek(0)
+            wm_bytes = wm_pdf.output(dest='S').encode('latin1')
+            wm_buffer = io.BytesIO(wm_bytes)
+            wm_reader = PdfReader(wm_buffer)
 
-    return final_pdf_output.read()
+            # Mezclar la marca de agua con la página existente
+            page.merge_page(wm_reader.pages[0])
+            writer.add_page(page)
+    else:
+        for page in reader.pages:
+            writer.add_page(page)
+
+    # Escribir el PDF final con marca de agua o sin ella
+    output_buffer = io.BytesIO()
+    writer.write(output_buffer)
+    output_buffer.seek(0)
+
+    return output_buffer.read()
