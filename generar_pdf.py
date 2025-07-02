@@ -114,7 +114,10 @@ def generar_pdf(data, admin=False):
         # Marca de agua (solo admin)
         pdf.set_font("Arial", "I", 100)
         pdf.set_text_color(180, 180, 180)
-        pdf.text(60, 100, "Sin marca de agua")
+        for y in range(0, 300, 60):
+            pdf.rotate(45, x=0, y=0)
+            pdf.text(-50, y, ". . . . CYBERNOVA")
+            pdf.rotate(0)
 
     # Generar el PDF en memoria (como string de bytes)
     pdf_output = pdf.output(dest='S')  # Esto nos da el PDF como un string de bytes
