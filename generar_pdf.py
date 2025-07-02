@@ -81,7 +81,7 @@ def generar_pdf(data, admin=False):
     establecimientos = data.get("establecimiento", [])
     grados = data.get("grado", [])
 
-    # Verificar si los campos son listas. Si no lo son, convertir a lista.
+    # Asegurarse de que los datos sean listas
     if not isinstance(fechas, list):
         fechas = [fechas]
     if not isinstance(establecimientos, list):
@@ -94,6 +94,7 @@ def generar_pdf(data, admin=False):
     print(f"Establecimientos: {establecimientos}")
     print(f"Grados: {grados}")
 
+    # Añadir los datos de formación
     pdf.set_font("Arial", "", 12)
     for f, e, g in zip(fechas, establecimientos, grados):
         if f and e and g:  # Solo agregar si todos los campos tienen datos
@@ -117,7 +118,7 @@ def generar_pdf(data, admin=False):
     empresas = data.get("empresa", [])
     cargos = data.get("cargo", [])
 
-    # Verificar si los campos son listas. Si no lo son, convertir a lista.
+    # Asegurarse de que los datos sean listas
     if not isinstance(fechas_lab, list):
         fechas_lab = [fechas_lab]
     if not isinstance(empresas, list):
@@ -130,6 +131,7 @@ def generar_pdf(data, admin=False):
     print(f"Empresas: {empresas}")
     print(f"Cargos: {cargos}")
 
+    # Añadir los datos de experiencia laboral
     pdf.set_font("Arial", "", 12)
     for f, emp, c in zip(fechas_lab, empresas, cargos):
         if f and emp and c:  # Solo agregar si todos los campos tienen datos
