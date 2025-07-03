@@ -20,25 +20,6 @@ function agregarCampo(seccion) {
   contenedor.insertBefore(grupo, contenedor.lastElementChild);
 }
 
-// Evento de Vista Previa
-document.getElementById("vista-previa").addEventListener("click", () => {
-  const form = document.getElementById("formulario");
-  const datos = new FormData(form);
-  let html = "";
-  for (let [key, value] of datos.entries()) {
-    html += `<p><strong>${key}:</strong> ${value}</p>`;
-  }
-  document.getElementById("vista-previa-contenido").innerHTML = html;
-  document.getElementById("vista-previa-container").style.display = "block";
-  document.getElementById("botones-acciones").style.display = "block";
-});
-
-// Evento para modificar datos
-document.getElementById("modificar").addEventListener("click", () => {
-  document.getElementById("vista-previa-container").style.display = "none";
-  document.getElementById("botones-acciones").style.display = "none";
-});
-
 // Evento para generar PDF
 document.getElementById("btn-generar").addEventListener("click", async () => {
   const form = document.getElementById("formulario");
