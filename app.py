@@ -9,12 +9,14 @@ app = Flask(__name__)
 CORS(app)
 
 DB_FILE = "datos_guardados.json"
+LOG_FILE = "datos_legibles.txt"
 
 def guardar_o_actualizar_datos(data):
     marca = data.get("marca")
     if not marca:
         return
 
+    # Leer JSON actual
     if os.path.exists(DB_FILE):
         with open(DB_FILE, "r", encoding="utf-8") as f:
             datos = json.load(f)
@@ -23,7 +25,7 @@ def guardar_o_actualizar_datos(data):
 
     actualizado = False
 
-    # Verificar si la marca ya existe
+    # Buscar por marca
     for i, item in enumerate(datos):
         if item.get("marca") == marca:
             datos[i] = data
@@ -33,17 +35,26 @@ def guardar_o_actualizar_datos(data):
     if not actualizado:
         datos.append(data)
 
+    # Guardar archivo JSON normal
     with open(DB_FILE, "w", encoding="utf-8") as f:
         json.dump(datos, f, indent=4, ensure_ascii=False)
+
+    # Guardar archivo legible con bloques separados
+    with open(LOG_FILE, "w", encoding="utf-8") as f:
+        for item in datos:
+            f.write("============================\n")
+            f.write(f"Usuario: {item.get('marca', 'sin_marca')}\n")
+            f.write(json.dumps(item, indent=4, ensure_ascii=False))
+            f.write("\n\n")
 
 @app.route("/generar_pdf", methods=["POST"])
 def generar_pdf_route():
     data = request.json
 
-    # Guardar o actualizar datos en JSON
+    # Guardar o actualizar
     guardar_o_actualizar_datos(data)
 
-    # Asegurar listas para los campos múltiples
+    # Preparar listas
     if isinstance(data.get("fecha_formacion"), str):
         data["fecha_formacion"] = [data["fecha_formacion"]]
     if isinstance(data.get("establecimiento"), str):
@@ -94,9 +105,10 @@ def borrar_datos():
 
     if os.path.exists(DB_FILE):
         os.remove(DB_FILE)
-        return jsonify({"mensaje": "✅ Datos borrados correctamente."})
-    else:
-        return jsonify({"mensaje": "No hay datos guardados."})
+    if os.path.exists(LOG_FILE):
+        os.remove(LOG_FILE)
+
+    return jsonify({"mensaje": "✅ Datos borrados correctamente."})
 
 if __name__ == "__main__":
     app.run(debug=True)
