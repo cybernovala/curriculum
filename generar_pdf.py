@@ -10,17 +10,14 @@ class PDFWithFooter(FPDF):
         self.cell(0, 10, "Curriculum vitae", 0, 0, "R")
 
 def generar_pdf(data, admin=False):
-    # Crear el PDF
     pdf = PDFWithFooter()
     pdf.add_page()
 
-    # Título: Nombre
     pdf.set_font("Arial", "B", 22)
     pdf.set_text_color(40, 40, 80)
     nombre = data.get("nombre", "").upper()
     pdf.cell(0, 12, nombre, ln=1, align="C")
 
-    # Email y Teléfono debajo
     pdf.set_font("Arial", "", 12)
     email = data.get("email", "").upper()
     telefono = data.get("telefono", "").upper()
@@ -31,17 +28,13 @@ def generar_pdf(data, admin=False):
 
     y_actual = pdf.get_y() + 5
 
-    # Columna lateral decorativa
     pdf.set_fill_color(230, 230, 230)
     pdf.rect(10, y_actual, 40, 250 - y_actual, 'F')
-
-    # Línea horizontal decorativa
     pdf.set_draw_color(50, 50, 150)
     pdf.set_line_width(0.8)
     pdf.line(10, y_actual, 200, y_actual)
     pdf.ln(8)
 
-    # Datos personales
     pdf.set_font("Arial", "B", 14)
     pdf.set_text_color(0, 0, 0)
     pdf.cell(0, 10, "DATOS PERSONALES", ln=1)
@@ -66,22 +59,18 @@ def generar_pdf(data, admin=False):
             pdf.multi_cell(0, 8, valor.upper(), border=0)
     pdf.ln(3)
 
-    # Línea divisoria
     pdf.set_draw_color(150, 150, 150)
     pdf.set_line_width(0.5)
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
     pdf.ln(5)
 
-    # Formación académica
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, "FORMACIÓN ACADÉMICA", ln=1)
 
-    # Obtener las fechas, establecimientos y grados
     fechas = data.get("fecha_formacion", [])
     establecimientos = data.get("establecimiento", [])
     grados = data.get("grado", [])
 
-    # Asegurarse de que los datos sean listas
     if not isinstance(fechas, list):
         fechas = [fechas]
     if not isinstance(establecimientos, list):
@@ -89,40 +78,29 @@ def generar_pdf(data, admin=False):
     if not isinstance(grados, list):
         grados = [grados]
 
-    # Depuración: Verificar las listas
-    print(f"Fechas de formación: {fechas}")
-    print(f"Establecimientos: {establecimientos}")
-    print(f"Grados: {grados}")
-
-    # Añadir los datos de formación
     pdf.set_font("Arial", "", 12)
     for i in range(len(fechas)):
         fecha = fechas[i] if i < len(fechas) else ""
         establecimiento = establecimientos[i] if i < len(establecimientos) else ""
         grado = grados[i] if i < len(grados) else ""
-        
-        if fecha and establecimiento and grado:  # Solo agregar si todos los campos tienen datos
-            pdf.set_font("Arial", "", 12)
+
+        if fecha or establecimiento or grado:
             pdf.cell(60, 8, fecha, border=0)
             pdf.multi_cell(0, 8, f"{establecimiento.upper()} ({grado.upper()})", border=0)
-    pdf.ln(3)
 
-    # Línea divisoria
+    pdf.ln(3)
     pdf.set_draw_color(150, 150, 150)
     pdf.set_line_width(0.5)
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
     pdf.ln(5)
 
-    # Experiencia laboral
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, "EXPERIENCIA LABORAL", ln=1)
 
-    # Obtener las fechas, empresas y cargos de experiencia
     fechas_lab = data.get("fecha_experiencia", [])
     empresas = data.get("empresa", [])
     cargos = data.get("cargo", [])
 
-    # Asegurarse de que los datos sean listas
     if not isinstance(fechas_lab, list):
         fechas_lab = [fechas_lab]
     if not isinstance(empresas, list):
@@ -130,58 +108,40 @@ def generar_pdf(data, admin=False):
     if not isinstance(cargos, list):
         cargos = [cargos]
 
-    # Depuración: Verificar las listas
-    print(f"Fechas de experiencia laboral: {fechas_lab}")
-    print(f"Empresas: {empresas}")
-    print(f"Cargos: {cargos}")
-
-    # Añadir los datos de experiencia laboral
     pdf.set_font("Arial", "", 12)
     for i in range(len(fechas_lab)):
         fecha_lab = fechas_lab[i] if i < len(fechas_lab) else ""
         empresa = empresas[i] if i < len(empresas) else ""
         cargo = cargos[i] if i < len(cargos) else ""
-        
-        if fecha_lab and empresa and cargo:  # Solo agregar si todos los campos tienen datos
-            pdf.set_font("Arial", "", 12)
+
+        if fecha_lab or empresa or cargo:
             pdf.cell(60, 8, fecha_lab, border=0)
             pdf.multi_cell(0, 8, f"{empresa.upper()}, {cargo.upper()}", border=0)
 
-    # Convertir a bytes
     pdf_bytes = pdf.output(dest='S').encode('latin1')
     pdf_buffer = io.BytesIO(pdf_bytes)
-
-    # Leer el PDF generado
     reader = PdfReader(pdf_buffer)
     writer = PdfWriter()
 
-    # Si no es admin, agregar marca de agua
     if not admin:
         for page in reader.pages:
-            # Crear un PDF con la marca de agua
             wm_pdf = FPDF()
             wm_pdf.add_page()
             wm_pdf.set_font("Arial", "B", 70)
             wm_pdf.set_text_color(245, 245, 245)
-
-            # Aplicar la marca de agua inclinada
             for y in range(0, 300, 140):
                 wm_pdf.rotate(45, x=0, y=0)
                 wm_pdf.text(-50, y, "  CYBERNOVA     CYBERNOVA       CYBERNOVA")
                 wm_pdf.rotate(0)
-
             wm_bytes = wm_pdf.output(dest='S').encode('latin1')
             wm_buffer = io.BytesIO(wm_bytes)
             wm_reader = PdfReader(wm_buffer)
-
-            # Mezclar la marca de agua con la página existente
             page.merge_page(wm_reader.pages[0])
             writer.add_page(page)
     else:
         for page in reader.pages:
             writer.add_page(page)
 
-    # Escribir el PDF final con marca de agua o sin ella
     output_buffer = io.BytesIO()
     writer.write(output_buffer)
     output_buffer.seek(0)
