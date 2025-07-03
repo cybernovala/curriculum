@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, jsonify
+from flask import Flask, request, send_file, jsonify, Response
 from flask_cors import CORS
 from generar_pdf import generar_pdf
 import io
@@ -9,14 +9,12 @@ app = Flask(__name__)
 CORS(app)
 
 DB_FILE = "datos_guardados.json"
-LOG_FILE = "datos_legibles.txt"
 
 def guardar_o_actualizar_datos(data):
     marca = data.get("marca")
     if not marca:
         return
 
-    # Leer JSON actual
     if os.path.exists(DB_FILE):
         with open(DB_FILE, "r", encoding="utf-8") as f:
             datos = json.load(f)
@@ -25,7 +23,6 @@ def guardar_o_actualizar_datos(data):
 
     actualizado = False
 
-    # Buscar por marca
     for i, item in enumerate(datos):
         if item.get("marca") == marca:
             datos[i] = data
@@ -35,26 +32,15 @@ def guardar_o_actualizar_datos(data):
     if not actualizado:
         datos.append(data)
 
-    # Guardar archivo JSON normal
     with open(DB_FILE, "w", encoding="utf-8") as f:
         json.dump(datos, f, indent=4, ensure_ascii=False)
-
-    # Guardar archivo legible con bloques separados
-    with open(LOG_FILE, "w", encoding="utf-8") as f:
-        for item in datos:
-            f.write("============================\n")
-            f.write(f"Usuario: {item.get('marca', 'sin_marca')}\n")
-            f.write(json.dumps(item, indent=4, ensure_ascii=False))
-            f.write("\n\n")
 
 @app.route("/generar_pdf", methods=["POST"])
 def generar_pdf_route():
     data = request.json
 
-    # Guardar o actualizar
     guardar_o_actualizar_datos(data)
 
-    # Preparar listas
     if isinstance(data.get("fecha_formacion"), str):
         data["fecha_formacion"] = [data["fecha_formacion"]]
     if isinstance(data.get("establecimiento"), str):
@@ -92,9 +78,20 @@ def ver_datos():
     if os.path.exists(DB_FILE):
         with open(DB_FILE, "r", encoding="utf-8") as f:
             datos = json.load(f)
-        return jsonify(datos)
+
+        # Crear texto legible con separadores
+        texto = ""
+        for item in datos:
+            texto += "============================\n"
+            texto += f"MARCA: {item.get('marca', 'sin_marca')}\n"
+            texto += json.dumps(item, indent=4, ensure_ascii=False)
+            texto += "\n\n"
+
+        # Devolver texto plano
+        return Response(texto, mimetype="text/plain")
+
     else:
-        return jsonify([])
+        return Response("No hay datos guardados.", mimetype="text/plain")
 
 @app.route("/borrar_datos", methods=["POST"])
 def borrar_datos():
@@ -105,10 +102,9 @@ def borrar_datos():
 
     if os.path.exists(DB_FILE):
         os.remove(DB_FILE)
-    if os.path.exists(LOG_FILE):
-        os.remove(LOG_FILE)
-
-    return jsonify({"mensaje": "✅ Datos borrados correctamente."})
+        return jsonify({"mensaje": "✅ Datos borrados correctamente."})
+    else:
+        return jsonify({"mensaje": "No hay datos guardados."})
 
 if __name__ == "__main__":
     app.run(debug=True)
