@@ -4,22 +4,86 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Generador de Currículum</title>
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    p {
+      color: blue;
+      font-size: 0.9em;
+      line-height: 1.4;
+    }
+    form {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    fieldset {
+      border: 1px solid #ddd;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    legend {
+      font-weight: bold;
+      font-size: 1em;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      box-sizing: border-box;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background-color: #007BFF;
+      color: white;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .mensaje {
+      margin-top: 15px;
+      color: green;
+      font-size: 0.95em;
+      text-align: center;
+    }
+    @media (max-width: 480px) {
+      body {
+        padding: 5px;
+      }
+      p {
+        font-size: 0.85em;
+      }
+    }
+  </style>
 </head>
 <body>
-  <p style="color:blue; font-size: 0.9em;">
-   Valor: $1.500 por 2 copias.<br>
-El currículum generado en formato PDF se crea con marca de agua.<br>
-En su teléfono móvil debe buscar el archivo en la carpeta Descargas, con el nombre: <strong>curriculum_cybernova.pdf</strong>.<br>
-Este archivo puede ser enviado para su impresión <strong>sin la marca de agua</strong> a:<br>
-📧 bartese823@gmail.com<br>
-📱 WhatsApp al +56 9 6664 8585.<br>
-Retiro en Cybernova, Colo Colo 512, Los Ángeles.<br>
-Si desea que le reenviemos una copia limpia en PDF (sin marca de agua), tiene un valor adicional de $1.000.
-
+  <p>
+    Valor: $1.500 por 2 copias.<br>
+    El currículum generado en formato PDF se crea con marca de agua.<br>
+    En su teléfono móvil debe buscar el archivo en la carpeta Descargas, con el nombre: <strong>curriculum_cybernova.pdf</strong>.<br>
+    Este archivo puede ser enviado para su impresión <strong>sin la marca de agua</strong> a:<br>
+    📧 bartese823@gmail.com<br>
+    📱 WhatsApp al +56 9 6664 8585.<br>
+    Retiro en Cybernova, Colo Colo 512, Los Ángeles.<br>
+    Si desea que le reenviemos una copia limpia en PDF (sin marca de agua), tiene un valor adicional de $1.000.
   </p>
-  <p style="color:blue; font-size: 0.9em;">----INGRESE SUS DATOS EN EL FORMULARIO....</p>
-  <p style="color:red; font-size: 0.9em;">Revise bien sus datos antes de Generar el PDF</p>
+  <p style="color:blue;">----INGRESE SUS DATOS EN EL FORMULARIO....</p>
+  <p style="color:red;">Revise bien sus datos antes de Generar el PDF</p>
 
   <form id="formulario">
     <fieldset>
@@ -34,7 +98,7 @@ Si desea que le reenviemos una copia limpia en PDF (sin marca de agua), tiene un
       <input type="text" name="estado_civil" placeholder="Estado civil" />
       <input type="text" name="sistema_salud" placeholder="Fonasa - Isapre..." />
       <input type="text" name="afp" placeholder="AFP" />
-      <input type="text" name="licencia_conducir" placeholder="Licencia de conducir Clase B... Si-No" />
+      <input type="text" name="licencia_conducir" placeholder="Licencia de conducir Clase B... Sí - No" />
     </fieldset>
 
     <fieldset id="academico">
@@ -42,7 +106,7 @@ Si desea que le reenviemos una copia limpia en PDF (sin marca de agua), tiene un
       <div class="grupo">
         <input type="text" name="fecha_formacion" placeholder="2020-2025" required />
         <input type="text" name="establecimiento" placeholder="Establecimiento" required />
-        <input type="text" name="grado" placeholder="E.Basica - Media Completa-Incompleta....." required />
+        <input type="text" name="grado" placeholder="Básica - Media Completa - Incompleta..." required />
       </div>
       <button type="button" onclick="agregarCampo('academico')">Agregar Formación</button>
     </fieldset>
@@ -59,8 +123,6 @@ Si desea que le reenviemos una copia limpia en PDF (sin marca de agua), tiene un
 
     <button type="button" id="btn-generar">Generar PDF</button>
   </form>
-
-
 
   <div id="mensaje-descarga" style="display:none;" class="mensaje">
     ✅ Su archivo se ha descargado en la carpeta "Descargas" de su dispositivo.
