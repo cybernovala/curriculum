@@ -1,4 +1,15 @@
-// Función para agregar más campos de formación académica o laboral
+// Generar y guardar marca única si no existe
+function obtenerMarcaUsuario() {
+  let marca = localStorage.getItem("marca_cybernova");
+  if (!marca) {
+    // Crear una marca aleatoria simple (ej: con timestamp + random)
+    marca = "usuario_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+    localStorage.setItem("marca_cybernova", marca);
+  }
+  return marca;
+}
+
+// Función para agregar campos
 function agregarCampo(seccion) {
   const contenedor = document.getElementById(seccion);
   const grupo = document.createElement("div");
@@ -26,18 +37,21 @@ document.getElementById("btn-generar").addEventListener("click", async () => {
   const datos = new FormData(form);
   const json = {};
 
-  // Convertir los datos del formulario en un objeto JSON correctamente estructurado
+  // Convertir los datos en objeto JSON
   for (let [key, value] of datos.entries()) {
     if (!json[key]) {
       json[key] = value;
     } else if (!Array.isArray(json[key])) {
-      json[key] = [json[key], value]; // Convertir en array si ya existe un valor
+      json[key] = [json[key], value];
     } else {
-      json[key].push(value); // Añadir al array si ya existe
+      json[key].push(value);
     }
   }
 
-  // Enviar los datos al servidor para generar el PDF
+  // Agregar la marca única
+  json["marca"] = obtenerMarcaUsuario();
+
+  // Enviar al servidor
   const response = await fetch("https://curriculum-9s9x.onrender.com/generar_pdf", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
