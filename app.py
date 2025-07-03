@@ -10,14 +10,28 @@ CORS(app)
 
 DB_FILE = "datos_guardados.json"
 
-def guardar_datos(data):
+def guardar_o_actualizar_datos(data):
+    marca = data.get("marca")
+    if not marca:
+        return
+
     if os.path.exists(DB_FILE):
         with open(DB_FILE, "r", encoding="utf-8") as f:
             datos = json.load(f)
     else:
         datos = []
 
-    datos.append(data)
+    actualizado = False
+
+    # Verificar si la marca ya existe
+    for i, item in enumerate(datos):
+        if item.get("marca") == marca:
+            datos[i] = data
+            actualizado = True
+            break
+
+    if not actualizado:
+        datos.append(data)
 
     with open(DB_FILE, "w", encoding="utf-8") as f:
         json.dump(datos, f, indent=4, ensure_ascii=False)
@@ -26,10 +40,24 @@ def guardar_datos(data):
 def generar_pdf_route():
     data = request.json
 
-    # Guardar datos
-    guardar_datos(data)
+    # Guardar o actualizar datos en JSON
+    guardar_o_actualizar_datos(data)
 
-    # Ya no necesitamos convertir campos a listas aquí porque script.js los envía correctamente
+    # Asegurar listas para los campos múltiples
+    if isinstance(data.get("fecha_formacion"), str):
+        data["fecha_formacion"] = [data["fecha_formacion"]]
+    if isinstance(data.get("establecimiento"), str):
+        data["establecimiento"] = [data["establecimiento"]]
+    if isinstance(data.get("grado"), str):
+        data["grado"] = [data["grado"]]
+    
+    if isinstance(data.get("fecha_experiencia"), str):
+        data["fecha_experiencia"] = [data["fecha_experiencia"]]
+    if isinstance(data.get("empresa"), str):
+        data["empresa"] = [data["empresa"]]
+    if isinstance(data.get("cargo"), str):
+        data["cargo"] = [data["cargo"]]
+
     pdf_bytes = generar_pdf(data, admin=False)
 
     return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name="curriculum_cybernova.pdf", mimetype="application/pdf")
@@ -37,7 +65,6 @@ def generar_pdf_route():
 @app.route("/generar_pdf_admin", methods=["POST"])
 def generar_pdf_admin_route():
     datos = request.json
-
     clave = datos.get("clave")
     if clave != "@@ADMIN123@@":
         return jsonify({"error": "Clave incorrecta"}), 403
