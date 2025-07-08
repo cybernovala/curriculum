@@ -27,7 +27,6 @@ def generar_pdf(data, admin=False):
         pdf.cell(0, 6, telefono, ln=1, align="C")
 
     y_actual = pdf.get_y() + 5
-
     pdf.set_fill_color(230, 230, 230)
     pdf.rect(10, y_actual, 40, 250 - y_actual, 'F')
     pdf.set_draw_color(50, 50, 150)
@@ -48,7 +47,8 @@ def generar_pdf(data, admin=False):
         ("ESTADO CIVIL", data.get("estado_civil", "")),
         ("SISTEMA DE SALUD", data.get("sistema_salud", "")),
         ("AFP", data.get("afp", "")),
-        ("LICENCIA DE CONDUCIR", data.get("licencia_conducir", ""))
+        ("LICENCIA DE CONDUCIR", data.get("licencia_conducir", "")),
+        ("DISPONIBILIDAD", data.get("disponibilidad", "")),
     ]
 
     for label, valor in campos:
@@ -83,7 +83,6 @@ def generar_pdf(data, admin=False):
         fecha = fechas[i] if i < len(fechas) else ""
         establecimiento = establecimientos[i] if i < len(establecimientos) else ""
         grado = grados[i] if i < len(grados) else ""
-
         if fecha or establecimiento or grado:
             pdf.cell(60, 8, fecha, border=0)
             pdf.multi_cell(0, 8, f"{establecimiento.upper()} ({grado.upper()})", border=0)
@@ -113,7 +112,6 @@ def generar_pdf(data, admin=False):
         fecha_lab = fechas_lab[i] if i < len(fechas_lab) else ""
         empresa = empresas[i] if i < len(empresas) else ""
         cargo = cargos[i] if i < len(cargos) else ""
-
         if fecha_lab or empresa or cargo:
             pdf.cell(60, 8, fecha_lab, border=0)
             pdf.multi_cell(0, 8, f"{empresa.upper()}, {cargo.upper()}", border=0)
@@ -125,18 +123,6 @@ def generar_pdf(data, admin=False):
 
     if not admin:
         for page in reader.pages:
-            wm_pdf = FPDF()
-            wm_pdf.add_page()
-            wm_pdf.set_font("Arial", "B", 70)
-            wm_pdf.set_text_color(245, 245, 245)
-            for y in range(0, 300, 140):
-                wm_pdf.rotate(45, x=0, y=0)
-                wm_pdf.text(-50, y, "  CYBERNOVA     CYBERNOVA       CYBERNOVA")
-                wm_pdf.rotate(0)
-            wm_bytes = wm_pdf.output(dest='S').encode('latin1')
-            wm_buffer = io.BytesIO(wm_bytes)
-            wm_reader = PdfReader(wm_buffer)
-            page.merge_page(wm_reader.pages[0])
             writer.add_page(page)
     else:
         for page in reader.pages:
@@ -145,5 +131,4 @@ def generar_pdf(data, admin=False):
     output_buffer = io.BytesIO()
     writer.write(output_buffer)
     output_buffer.seek(0)
-
     return output_buffer.read()
