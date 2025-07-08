@@ -139,7 +139,7 @@ def generar_pdf(data, admin=False):
             wm_pdf.set_font("Arial", "B", 70)
             wm_pdf.set_text_color(245, 245, 245)
             wm_pdf.rotate(45, x=60, y=60)
-            wm_pdf.text(30, 150, "CYBERNOVA")
+            wm_pdf.text(30, 140, "CYBERNOVA")
             wm_pdf.rotate(0)
             wm_bytes = wm_pdf.output(dest='S').encode('latin1')
             wm_buffer = io.BytesIO(wm_bytes)
