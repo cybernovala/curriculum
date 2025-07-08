@@ -5,7 +5,7 @@ from PyPDF2 import PdfReader, PdfWriter
 class PDFWithFooter(FPDF):
     def footer(self):
         self.set_y(-15)
-        self.set_font("Arial", "BI", 18)
+        self.set_font("Arial", "BI", 20)
         self.set_text_color(200, 200, 200)
         self.cell(0, 10, "Curriculum vitae", 0, 0, "R")
 
