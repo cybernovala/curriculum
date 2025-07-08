@@ -99,7 +99,6 @@
       <input type="text" name="sistema_salud" placeholder="Fonasa - Isapre..." />
       <input type="text" name="afp" placeholder="AFP" />
       <input type="text" name="licencia_conducir" placeholder="Licencia de conducir Clase B... Sí - No" />
-      <input type="text" name="disponibilidad" placeholder="Disponibilidad: Inmediata - Full time - Sábados y domingos" />
     </fieldset>
 
     <fieldset id="academico">
@@ -120,6 +119,11 @@
         <input type="text" name="cargo" placeholder="Cargo" required />
       </div>
       <button type="button" onclick="agregarCampo('laboral')">Agregar Experiencia</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Disponibilidad</legend>
+      <input type="text" name="disponibilidad" placeholder="Disponibilidad: Inmediata - Full time - Sábados y domingos" />
     </fieldset>
 
     <button type="button" id="btn-generar">Generar PDF</button>
