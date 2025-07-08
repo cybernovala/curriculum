@@ -47,8 +47,7 @@ def generar_pdf(data, admin=False):
         ("ESTADO CIVIL", data.get("estado_civil", "")),
         ("SISTEMA DE SALUD", data.get("sistema_salud", "")),
         ("AFP", data.get("afp", "")),
-        ("LICENCIA DE CONDUCIR", data.get("licencia_conducir", "")),
-        ("DISPONIBILIDAD", data.get("disponibilidad", "")),
+        ("LICENCIA DE CONDUCIR", data.get("licencia_conducir", ""))
     ]
 
     for label, valor in campos:
@@ -116,13 +115,36 @@ def generar_pdf(data, admin=False):
             pdf.cell(60, 8, fecha_lab, border=0)
             pdf.multi_cell(0, 8, f"{empresa.upper()}, {cargo.upper()}", border=0)
 
+    pdf.ln(5)
+
+    # Disponibilidad al final
+    disponibilidad = data.get("disponibilidad", "")
+    if disponibilidad:
+        pdf.set_font("Arial", "B", 14)
+        pdf.cell(0, 10, "DISPONIBILIDAD", ln=1)
+        pdf.set_font("Arial", "", 12)
+        pdf.multi_cell(0, 8, disponibilidad.upper(), border=0)
+
+    # Generar PDF
     pdf_bytes = pdf.output(dest='S').encode('latin1')
     pdf_buffer = io.BytesIO(pdf_bytes)
     reader = PdfReader(pdf_buffer)
     writer = PdfWriter()
 
     if not admin:
+        # Marca de agua en todas las páginas
         for page in reader.pages:
+            wm_pdf = FPDF()
+            wm_pdf.add_page()
+            wm_pdf.set_font("Arial", "B", 70)
+            wm_pdf.set_text_color(245, 245, 245)
+            wm_pdf.rotate(45, x=60, y=60)
+            wm_pdf.text(30, 150, "CYBERNOVA")
+            wm_pdf.rotate(0)
+            wm_bytes = wm_pdf.output(dest='S').encode('latin1')
+            wm_buffer = io.BytesIO(wm_bytes)
+            wm_reader = PdfReader(wm_buffer)
+            page.merge_page(wm_reader.pages[0])
             writer.add_page(page)
     else:
         for page in reader.pages:
