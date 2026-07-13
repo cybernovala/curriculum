@@ -17,14 +17,36 @@ function agregarCampo(seccion) {
 
   if (seccion === "academico") {
     grupo.innerHTML = `
-      <input type="text" name="fecha_formacion" placeholder="2020-2025" required />
-      <input type="text" name="establecimiento" placeholder="Establecimiento" required />
+      <input type="text"
+       name="fecha_formacion"
+       placeholder="2020 - 2025"
+       maxlength="11"
+       style="width:130px;"
+       required />
+
+<input type="text"
+       name="establecimiento"
+       placeholder="Liceo A-3"
+       maxlength="35"
+       style="width:280px;"
+       required />
       <input type="text" name="grado" placeholder="E.Basica - Media Completa-Incompleta....." required />
     `;
   } else if (seccion === "laboral") {
     grupo.innerHTML = `
-      <input type="text" name="fecha_experiencia" placeholder="2020-2025" required />
-      <input type="text" name="empresa" placeholder="Empresa" required />
+      <input type="text"
+       name="fecha_experiencia"
+       placeholder="2020 - 2025"
+       maxlength="11"
+       style="width:130px;"
+       required />
+
+<input type="text"
+       name="empresa"
+       placeholder="Empresa"
+       maxlength="35"
+       style="width:280px;"
+       required />
       <input type="text" name="cargo" placeholder="Cargo" required />
     `;
   }
